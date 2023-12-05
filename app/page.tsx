@@ -2,8 +2,6 @@ import { UUID } from "./_components/UUID";
 import { fortune } from "./_server_functions/fortune";
 import { get } from "./_server_functions/kv";
 
-export const maxDuration = 300;
-
 export default async function Home() {
   const prevResult = await get();
   return (
