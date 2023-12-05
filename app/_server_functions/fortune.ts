@@ -3,7 +3,6 @@ import { OpenAI } from "openai";
 import { set } from "./kv";
 
 export async function fortune(_: string, formData: FormData): Promise<string> {
-  "use server";
   const uuid = formData.get("uuid") as string | null;
   if (uuid === null) {
     throw Error("uuid not found");
