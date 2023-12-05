@@ -18,18 +18,19 @@ const Submit: FC = () => {
 
 const Result: FC<{ text: string }> = ({ text }) => {
   return (
-    <>
+    <div>
       {text !== "" && (
         <div>
           占い結果は以下のとおりです。
-          <p>
+          <div>
             {text.split("\n").map((val, i) => (
-              <p key={`${i}`}>{val}</p>
+              <div key={`${i}`}>{val}</div>
             ))}
-          </p>
+          </div>
         </div>
       )}
-    </>
+      {text !== "" && <div>占い結果は一日立つと消えます。</div>}
+    </div>
   );
 };
 
@@ -38,7 +39,7 @@ export const UUID: FC<Props> = ({ prevResult, fortune }) => {
   const [state, formAction] = useFormState(fortune, "");
   return (
     <div>
-      {state === "" && (
+      {(prevResult ?? state) === "" && (
         <form action={formAction}>
           <div>
             <button type="button" onClick={() => setUuid(crypto.randomUUID())}>
