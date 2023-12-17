@@ -1,20 +1,8 @@
 "use client";
-import { FC, useState } from "react";
-import { useFormState, useFormStatus } from "react-dom";
+import { useChat } from "ai/react";
+import { FC } from "react";
 
-type Props = {
-  prevResult: string | null;
-  fortune: (previousState: string, formData: FormData) => Promise<string>;
-};
-
-const Submit: FC = () => {
-  const { pending } = useFormStatus();
-  return (
-    <button type="submit" disabled={pending}>
-      {pending ? "生成中..." : "このUUIDで占う"}
-    </button>
-  );
-};
+type Props = {};
 
 const Result: FC<{ text: string }> = ({ text }) => {
   return (
@@ -34,24 +22,27 @@ const Result: FC<{ text: string }> = ({ text }) => {
   );
 };
 
-export const UUID: FC<Props> = ({ prevResult, fortune }) => {
-  const [uuid, setUuid] = useState("");
-  const [state, formAction] = useFormState(fortune, "");
+export const UUID: FC<Props> = () => {
+  const { handleSubmit, messages, input, setInput } = useChat();
   return (
     <div>
-      {(prevResult ?? state) === "" && (
-        <form action={formAction}>
+      {messages.length === 0 && (
+        <form onSubmit={handleSubmit}>
           <div>
-            <button type="button" onClick={() => setUuid(crypto.randomUUID())}>
-              {uuid === "" ? "UUIDを生成する" : "UUIDを再生成する"}
+            <button type="button" onClick={() => setInput(crypto.randomUUID())}>
+              {input === "" ? "UUIDを生成する" : "UUIDを再生成する"}
             </button>
           </div>
-          <div>{uuid === "" ? "ここにUUIDが表示されます。" : uuid}</div>
-          <input type="hidden" name="uuid" value={uuid} />
-          {uuid !== "" && <Submit />}
+          <div>{input === "" ? "ここにUUIDが表示されます。" : input}</div>
+          {input !== "" && <button type="submit">このUUIDで占う</button>}
         </form>
       )}
-      <Result text={prevResult ?? state} />
+      <Result
+        text={messages
+          .slice(1)
+          .map((val) => val.content)
+          .join()}
+      />
     </div>
   );
 };
